@@ -3,11 +3,10 @@ import logo from './logo.svg';
 import './App.css';
 // import SenderButton from './SenderButton'
 import MessageList from './MessageList'
-import CommentForm from './CommentForm'
 import AWSMqtt from 'aws-mqtt-client'
 import * as Config from './config.js'
-
-
+import RichEditorExample from './RichEditorExample'
+import './RichEditor.css';
 
 
 
@@ -34,7 +33,7 @@ class App extends Component {
 
     mqttClient.on('message', (topic, message) => {
       console.log('message retrieved: ', JSON.parse(message));
-      this.setState({messages: [...this.state.messages, JSON.parse(message)] });
+      this.setState({ messages: [...this.state.messages, JSON.parse(message)] });
     });
 
 
@@ -43,31 +42,27 @@ class App extends Component {
 
 
   componentWillMount() {
-    let messages = Array();
-    messages.push('hello world');
+    let messages = [];
     const mqttClient = this.initMQTT();
-
     this.setState({ mqttClient: mqttClient, messages: messages });
-
   }
 
-   publishMessage(data) {
-        console.log('Button was clicked!');
-        this.state.mqttClient.publish(Config.AWS_IOT_TOPIC, JSON.stringify({ key: Date.now(),  value: data}));
-    }
+  publishMessage(data) {
+    console.log('Button was clicked!');
+    this.state.mqttClient.publish(Config.AWS_IOT_TOPIC, JSON.stringify({ key: new Date().toJSON(), value: data }));
+  }
 
 
   render() {
     return (
       <div className="App">
+
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to Serverless Vienna</h2>
         </div>
-        <MessageList list={this.state.messages} />
-        {/*<SenderButton publishMessage={this.publishMessage}/>*/}
-        <CommentForm publishMessage={this.publishMessage}/>
-        
+        <RichEditorExample publishMessage={this.publishMessage} />
+        <MessageList list={this.state.messages} />        
       </div>
     );
   }

@@ -22,3 +22,32 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+
+.App ul {
+  list-style-type: none;
+}
+
+.App .MessageList {
+  text-align: left;
+  font-family: 'Georgia', serif;  
+} 
+
+.MessageList {
+  border: 1px solid #ddd;
+}
+
+.MessageList .key {
+  padding-right: 10px;
+  color: #666;
+  height: 100%;
+  vertical-align: top;
+}
+
+.MessageList .value {
+  display: inline-block;
+}
+
+.MessageList .value .p {
+  margin: 0; padding: 0;
+}

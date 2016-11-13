@@ -1,14 +1,17 @@
 {
-  "name": "aws-iot-react",
+  "name": "comments-showcase",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
     "react-scripts": "0.7.0"
   },
   "dependencies": {
+    "aws-mqtt-client": "0.0.5",
+    "draft-js": "^0.9.1",
+    "draft-js-export-html": "^0.5.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
-    "aws-mqtt-client": "0.0.5"
+    "sanitize-html": "^1.13.0"
   },
   "scripts": {
     "start": "react-scripts start",
