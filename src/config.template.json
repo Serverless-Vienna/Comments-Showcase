@@ -1,0 +1,21 @@
+{
+    "**** AWS ****": "",
+    "AWS": {
+        "REGION": "",
+        "IOT": {
+            "USER": {
+                "ACCESSKEY": "",
+                "SECRETKEY": ""
+            },
+            "ENDPOINT": "",
+            "TOPIC": ""
+        },
+        "COGNITO": {
+            "IDENTITYPOOLID": ""
+        }
+    },
+    "**** OAUTH ****": "",
+    "OAUTH": {
+        "GOOGLEAPIKEY": ""
+    }
+}

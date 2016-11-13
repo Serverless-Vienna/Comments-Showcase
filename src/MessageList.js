@@ -6,7 +6,7 @@ class MessageList extends React.Component {
       return (
         <ul>
           {this.props.list.map(function(item, key){
-            return <li key={key}>{item.value}</li>;
+            return <li key={key}>{item.serverTime.S + ' ' + item.uuid.S}</li>;
           })}
         </ul>
       )

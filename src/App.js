@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 // import SenderButton from './SenderButton'
-import MessageList from './MessageList'
-import CommentForm from './CommentForm'
-import AWSMqtt from 'aws-mqtt-client'
-import * as Config from './config.js'
+import MessageList from './MessageList';
+// import CommentForm from './CommentForm'
+import AWSMqtt from 'aws-mqtt-client';
+import Config from './config.json';
 
 
 
@@ -20,15 +20,14 @@ class App extends Component {
 
   initMQTT() {
     const mqttClient = new AWSMqtt({
-      accessKeyId: Config.AWS_ACCESS_KEY,
-      secretAccessKey: Config.AWS_SECRET_ACCESS_KEY,
-      // sessionToken: Config.AWS_SESSION_TOKEN,
-      endpointAddress: Config.AWS_IOT_ENDPOINT_HOST,
-      region: Config.AWS_REGION
+      accessKeyId: Config.AWS.IOT.USER.ACCESS_KEY,
+      secretAccessKey: Config.AWS.IOT.USER.SECRET_KEY,
+      endpointAddress: Config.AWS.IOT.ENDPOINT,
+      region: Config.AWS.REGION
     });
 
     mqttClient.on('connect', () => {
-      mqttClient.subscribe(Config.AWS_IOT_TOPIC);
+      mqttClient.subscribe(Config.AWS.IOT.TOPIC);
       console.log('connected to iot mqtt websocket');
     });
 
@@ -43,8 +42,7 @@ class App extends Component {
 
 
   componentWillMount() {
-    let messages = Array();
-    messages.push('hello world');
+    let messages = [];
     const mqttClient = this.initMQTT();
 
     this.setState({ mqttClient: mqttClient, messages: messages });
@@ -61,13 +59,13 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
           <h2>Welcome to Serverless Vienna</h2>
+          <h2>Comments Showcase</h2>
         </div>
         <MessageList list={this.state.messages} />
         {/*<SenderButton publishMessage={this.publishMessage}/>*/}
-        <CommentForm publishMessage={this.publishMessage}/>
-        
+        {/* <CommentForm publishMessage={this.publishMessage}/> */}
+
       </div>
     );
   }
