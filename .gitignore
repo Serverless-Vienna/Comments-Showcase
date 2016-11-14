@@ -38,3 +38,10 @@ jspm_packages
 
 # ignore real configuration
 config.json
+
+# apigw sdk
+public/apigClient.js
+public/apigwlib
+
+# production
+build

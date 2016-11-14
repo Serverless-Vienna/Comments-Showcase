@@ -9,9 +9,9 @@ class MessageList extends React.Component {
     } else {
       return (<div className="MessageList">
         <ul>
-          {this.props.list.reverse().map(function (item, key) {
+          {this.props.list.map(function (item, key) {
             return <li key={key}>
-              <span className="key">{item.key}</span>
+              <span className="key">from <b>{item.sender}</b> (@{item.serverTime}):</span><br/>
               <span className="value" dangerouslySetInnerHTML={{ __html: item.value }}></span>
             </li>;
           })}
@@ -22,4 +22,4 @@ class MessageList extends React.Component {
   }
 }
 
-
+export default MessageList;

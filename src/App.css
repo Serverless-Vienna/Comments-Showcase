@@ -21,11 +21,43 @@
 
 .App .MessageList {
   text-align: left;
-  font-family: 'Georgia', serif;  
-} 
+  font-family: 'Georgia', serif;
+}
 
 .MessageList {
   border: 1px solid #ddd;
+}
+
+button, input {
+    padding: 3px 6px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: sans-serif;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+.action-button {
+    background-color: #222;
+    color: yellow;
+    border: 1px solid yellow;
+}
+
+.login-button {
+    background-color: #D14836;
+    color: white;
+    border: 1px solid white;
+}
+
+.logout-button {
+    background-color: white;
+    color: #D14836;
+    border: 1px solid #D14836;
 }
 
 .MessageList .key {

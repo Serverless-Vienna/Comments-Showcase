@@ -4,6 +4,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+
+    <script type="text/javascript" src="apigwlib/axios/dist/axios.standalone.js"></script>
+    <script type="text/javascript" src="apigwlib/CryptoJS/rollups/hmac-sha256.js"></script>
+    <script type="text/javascript" src="apigwlib/CryptoJS/rollups/sha256.js"></script>
+    <script type="text/javascript" src="apigwlib/CryptoJS/components/hmac.js"></script>
+    <script type="text/javascript" src="apigwlib/CryptoJS/components/enc-base64.js"></script>
+    <script type="text/javascript" src="apigwlib/url-template/url-template.js"></script>
+    <script type="text/javascript" src="apigwlib/apiGatewayCore/sigV4Client.js"></script>
+    <script type="text/javascript" src="apigwlib/apiGatewayCore/apiGatewayClient.js"></script>
+    <script type="text/javascript" src="apigwlib/apiGatewayCore/simpleHttpClient.js"></script>
+    <script type="text/javascript" src="apigwlib/apiGatewayCore/utils.js"></script>
+    <script type="text/javascript" src="apigClient.js"></script>
+
     <!--
       Notice the use of %PUBLIC_URL% in the tag above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -13,7 +26,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Serverless Vienna - Comments Showcase</title>
   </head>
   <body>
     <div id="root"></div>
