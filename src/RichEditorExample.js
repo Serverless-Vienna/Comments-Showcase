@@ -28,7 +28,7 @@ function getBlockStyle(block) {
 class RichEditorExample extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { editorState: EditorState.createEmpty() };
+        this.state = { editorState: EditorState.createEmpty(), buttonEnabled: true };
 
         this.focus = () => this.refs.editor.focus();
         this.onChange = (editorState) => this.setState({ editorState });
@@ -74,6 +74,7 @@ class RichEditorExample extends React.Component {
     }
 
     _handleSubmit() {
+        this.setState( { buttonEnabled: false });
         console.log(this.state.editorState.getCurrentContent());
         if (this.state.editorState.getCurrentContent().hasText()) {
             const htmlContent = stateToHTML(this.state.editorState.getCurrentContent());
@@ -82,7 +83,7 @@ class RichEditorExample extends React.Component {
   'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'ins', 'pre' ]
             });
             console.log('A comment was submitted: ' + htmlContent + ' ' + sanitizedContent);
-            this.props.publishMessage(sanitizedContent);
+            this.props.publishMessage(sanitizedContent, () => { this.setState( { buttonEnabled: true, editorState: EditorState.createEmpty() }); });
         } else {
             console.log('No comment typed');
         }
@@ -122,7 +123,7 @@ class RichEditorExample extends React.Component {
                         spellCheck={true}
                         />
                 </div>
-                <input type="button" value="Submit" onClick={this.handleSubmit} />
+                <input type="button" value="Submit" onClick={this.handleSubmit} disabled={!this.state.buttonEnabled} />
             </div>
         );
     }

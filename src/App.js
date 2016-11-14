@@ -63,7 +63,7 @@ class App extends Component {
           });
 
           AwsUtil.obtainAWSCredentials().then((result) => {
-              this.setState({...result, loggedIn: true});
+              this.setState(...result, {loggedIn: true});
           }).catch((error) => {
               window.alert('Something went wrong while obtaining AWS Credentials!');
           });
@@ -96,7 +96,7 @@ class App extends Component {
     });
   }
 
-  publishMessage(comment) {
+  publishMessage(comment, performAction) {
       var apigClient = window.apigClientFactory.newClient({
           accessKey: AWS.config.credentials.accessKeyId,
           secretKey: AWS.config.credentials.secretAccessKey,
@@ -109,7 +109,9 @@ class App extends Component {
           value: comment
       }).then((response) => {
           console.dir(response);
+          performAction();
       }).then(() => {
+          performAction();
       }).catch((error) => {
           if (error.status === 403) {
               window.alert('Please login first')
@@ -117,6 +119,7 @@ class App extends Component {
           console.log("Error!");
           window.alert("Send failed. Please try again later.");
           console.dir(error);
+          performAction();
       });
   }
 
