@@ -40,8 +40,8 @@ jspm_packages
 config.json
 
 # apigw sdk
-public/apigClient.js
-public/apigwlib
+# public/apigClient.js
+# public/apigwlib
 
 # production
 build
