@@ -45,3 +45,5 @@ public/apigwlib
 
 # production
 build
+config.laszlo.json
+config.websta.json
