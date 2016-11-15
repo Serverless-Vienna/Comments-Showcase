@@ -12,6 +12,9 @@
         },
         "COGNITO": {
             "IDENTITYPOOLID": ""
+        },
+        "GOOGLE": {
+            "ROLE_ARN": ""
         }
     },
     "**** OAUTH ****": "",

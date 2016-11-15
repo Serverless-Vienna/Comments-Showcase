@@ -74,16 +74,21 @@ class RichEditorExample extends React.Component {
     }
 
     _handleSubmit() {
-        this.setState( { buttonEnabled: false });
         console.log(this.state.editorState.getCurrentContent());
         if (this.state.editorState.getCurrentContent().hasText()) {
+            this.setState( { buttonEnabled: false });
             const htmlContent = stateToHTML(this.state.editorState.getCurrentContent());
             const sanitizedContent = sanitizeHtml(htmlContent, {
                 allowedTags: [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol',
   'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'ins', 'pre' ]
             });
             console.log('A comment was submitted: ' + htmlContent + ' ' + sanitizedContent);
-            this.props.publishMessage(sanitizedContent, () => { this.setState( { buttonEnabled: true, editorState: EditorState.createEmpty() }); });
+            this.props.publishMessage(sanitizedContent, (success) => {
+                this.setState({buttonEnabled: true})
+                if (success) {
+                    this.setState({editorState: EditorState.createEmpty()})
+                }
+            });
         } else {
             console.log('No comment typed');
         }

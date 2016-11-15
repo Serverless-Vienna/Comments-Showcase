@@ -9,8 +9,6 @@ import RichEditorExample from './RichEditorExample';
 import './RichEditor.css';
 import MessageList from './MessageList';
 
-
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -36,9 +34,23 @@ class App extends Component {
     });
 
     mqttClient.on('message', (topic, message) => {
-      message = JSON.parse(message);
-      console.log('message retrieved: ', message);
-      this.setState({ messages: [ {uuid: message.uuid.S, serverTime: message.serverTime.S, value: message.value? message.value.S : '', sender: message.sender? message.sender.S : ''}, ...this.state.messages] });
+        message = JSON.parse(message);
+        console.log('message retrieved: ', message);
+        this.setState({
+            messages: [
+                {
+                    uuid: message.uuid.S,
+                    serverTime: message.serverTime.S,
+                    value: message.value
+                        ? message.value.S
+                        : '',
+                    sender: message.sender
+                        ? message.sender.S
+                        : ''
+                },
+                ...this.state.messages
+            ]
+        });
     });
 
     return mqttClient;
@@ -58,7 +70,7 @@ class App extends Component {
 
           // web identity for api gateway
           AWS.config.credentials = new AWS.WebIdentityCredentials({
-              RoleArn: 'arn:aws:iam::334066760643:role/googleIdentity', ProviderId: null, // this is null for Google, else 'graph.facebook.com|www.amazon.com'
+              RoleArn: APPCONFIG.AWS.GOOGLE.ROLE_ARN, ProviderId: null, // this is null for Google, else 'graph.facebook.com|www.amazon.com'
               WebIdentityToken: authResult.getAuthResponse().id_token
           });
 
@@ -96,7 +108,7 @@ class App extends Component {
     });
   }
 
-  publishMessage(comment, performAction) {
+  publishMessage(comment, postCommentDone) {
       var apigClient = window.apigClientFactory.newClient({
           accessKey: AWS.config.credentials.accessKeyId,
           secretKey: AWS.config.credentials.secretAccessKey,
@@ -109,9 +121,8 @@ class App extends Component {
           value: comment
       }).then((response) => {
           console.dir(response);
-          performAction();
+          postCommentDone(true);
       }).then(() => {
-          performAction();
       }).catch((error) => {
           if (error.status === 403) {
               window.alert('Please login first')
@@ -119,7 +130,7 @@ class App extends Component {
           console.log("Error!");
           window.alert("Send failed. Please try again later.");
           console.dir(error);
-          performAction();
+          postCommentDone(false);
       });
   }
 
