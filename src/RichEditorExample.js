@@ -3,8 +3,7 @@ import BlockStyleControls from './BlockStyleControls';
 import React from 'react';
 import Draft from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
-import sanitizeHtml from 'sanitize-html';
-
+import './RichEditorExample.css';
 
 const {Editor, EditorState, RichUtils, ContentState} = Draft;
 
@@ -77,11 +76,7 @@ class RichEditorExample extends React.Component {
     _handleSubmit() {
         if (this.state.editorState.getCurrentContent().hasText()) {
             const htmlContent = stateToHTML(this.state.editorState.getCurrentContent());
-            const sanitizedContent = sanitizeHtml(htmlContent, {
-                allowedTags: [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol',
-  'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'ins', 'pre' ]
-            });
-            this.props.publishMessage(sanitizedContent);
+            this.props.publishContent(htmlContent);
         }
     }
 
