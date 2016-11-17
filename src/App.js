@@ -1,59 +1,31 @@
 import React, { Component } from 'react';
-import './App.css';
 import AWS from 'aws-sdk';
-import AWSMqtt from 'aws-mqtt-client'
+import './App.css';
 import AwsUtil from './AwsUtil';
 import APPCONFIG from './config.json';
 import GoogleLogin from 'react-google-login';
 import RichEditorExample from './RichEditorExample';
 import './RichEditor.css';
 import MessageList from './MessageList';
+import CommentApiFactory from './CommentApiFactory';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.publishMessage = this.publishMessage.bind(this);
-    // this.publishMessageToMqtt = this.publishMessageToMqtt.bind(this);
     this.resetState = this.resetState.bind(this);
     this.fetchCommentList = this.fetchCommentList.bind(this);
     this.handleResponseGoogle = this.handleResponseGoogle.bind(this);
     this.signoutFromGoogle = this.signoutFromGoogle.bind(this);
-  }
-
-  initMQTT() {
-    const mqttClient = new AWSMqtt({
-      accessKeyId: APPCONFIG.AWS.IOT.USER.ACCESS_KEY,
-      secretAccessKey: APPCONFIG.AWS.IOT.USER.SECRET_KEY,
-      endpointAddress: APPCONFIG.AWS.IOT.ENDPOINT,
-      region: APPCONFIG.AWS.REGION
-    });
-
-    mqttClient.on('connect', () => {
-      mqttClient.subscribe(APPCONFIG.AWS.IOT.TOPIC);
-      console.log('connected to iot mqtt websocket');
-    });
-
-    mqttClient.on('message', (topic, message) => {
-        message = JSON.parse(message);
-        console.log('message retrieved: ', message);
+    this.commentApi = CommentApiFactory.create(
+      CommentApiFactory.AWS, (message) => {
         this.setState({
-            messages: [
-                {
-                    uuid: message.uuid.S,
-                    serverTime: message.serverTime.S,
-                    value: message.value
-                        ? message.value.S
-                        : '',
-                    sender: message.sender
-                        ? message.sender.S
-                        : ''
-                },
-                ...this.state.messages
-            ]
+          messages: [
+            message, ...this.state.messages
+          ]
         });
-    });
-
-    return mqttClient;
+      }
+    );
   }
 
   signoutFromGoogle() {
@@ -68,16 +40,11 @@ class App extends Component {
       if (authResult && authResult.isSignedIn()) {
           this.setState({email: authResult.getBasicProfile().getEmail(), accessToken: authResult.getAuthResponse().access_token});
 
-          // web identity for api gateway
-          AWS.config.credentials = new AWS.WebIdentityCredentials({
-              RoleArn: APPCONFIG.AWS.GOOGLE.ROLE_ARN, ProviderId: null, // this is null for Google, else 'graph.facebook.com|www.amazon.com'
-              WebIdentityToken: authResult.getAuthResponse().id_token
-          });
-
-          AwsUtil.obtainAWSCredentials().then((result) => {
-              this.setState(...result, {loggedIn: true});
-          }).catch((error) => {
-              window.alert('Something went wrong while obtaining AWS Credentials!');
+          AwsUtil.bindOpenId(authResult.getAuthResponse().id_token).then((result) => {
+            this.setState(...result, {loggedIn: true});
+          }).catch(error => {
+            console.dir(error);
+            window.alert('Something went wrong while binding open id to aws credentials!');
           });
 
       } else {
@@ -87,20 +54,18 @@ class App extends Component {
   }
 
   fetchCommentList() {
-    var apigClient = window.apigClientFactory.newClient();
-    apigClient.commentsGet({}, {}).then((response) => {
-        console.dir(response);
-        var messages = JSON.parse(response.data.body).Items;
-        // http://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value-in-javascript
-        messages.sort(function(a, b) {
-            return (a.serverTime < b.serverTime)
-                ? 1
-                : ((b.serverTime < a.serverTime)
-                    ? -1
-                    : 0);
-        });
-        this.setState({messages: [...this.state.messages, ...messages]});
-    }).then(() => {}).catch((error) => {
+    this.commentApi.getAll().then((messages) => {
+      var allMessages = this.state.messages.concat(messages);
+      // http://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value-in-javascript
+      allMessages.sort(function(a, b) {
+          return (a.serverTime < b.serverTime)
+              ? 1
+              : ((b.serverTime < a.serverTime)
+                  ? -1
+                  : 0);
+      });
+      this.setState({messages: allMessages});
+    }).catch((error) => {
         if (error.status === 403) {
             window.alert('Please login first')
         }
@@ -120,14 +85,12 @@ class App extends Component {
           sender: this.state.email,
           value: comment
       }).then((response) => {
-          console.dir(response);
           postCommentDone(true);
       }).then(() => {
       }).catch((error) => {
           if (error.status === 403) {
               window.alert('Please login first')
           }
-          console.log("Error!");
           window.alert("Send failed. Please try again later.");
           console.dir(error);
           postCommentDone(false);
@@ -135,16 +98,10 @@ class App extends Component {
   }
 
   componentWillMount() {
-    this.fetchCommentList();
     this.resetState();
-    let messages = [];
-    const mqttClient = this.initMQTT();
-    this.setState({ mqttClient: mqttClient, messages: messages });
+    this.fetchCommentList();
+    this.setState({ messages: [] });
   }
-
-  // publishMessageToMqtt(data) {
-  //   this.state.mqttClient.publish(APPCONFIG.AWS.IOT.TOPIC, JSON.stringify({ uuid: AwsUtil.guid(), clientTime: new Date().toJSON(), value: data }));
-  // }
 
   resetState() {
       this.setState({
