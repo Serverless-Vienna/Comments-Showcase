@@ -1,5 +1,6 @@
 import AWSMqtt from 'aws-mqtt-client';
 import APPCONFIG from './config.json';
+import AWS from 'aws-sdk';
 
 export default class AwsCommentApi {
 
@@ -28,8 +29,13 @@ export default class AwsCommentApi {
     });
   }
 
-  post() {
-
+  post(comment) {
+    var apigClient = window.apigClientFactory.newClient({
+        accessKey: AWS.config.credentials.accessKeyId,
+        secretKey: AWS.config.credentials.secretAccessKey,
+        sessionToken: AWS.config.credentials.sessionToken
+    });
+    return apigClient.commentsPost({}, comment);
   }
 
   getAll() {

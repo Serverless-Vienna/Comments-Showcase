@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import AWS from 'aws-sdk';
 import './App.css';
 import AwsUtil from './AwsUtil';
+import GoogleUtil from './GoogleUtil';
+import guid from './helper';
 import APPCONFIG from './config.json';
 import GoogleLogin from 'react-google-login';
 import RichEditorExample from './RichEditorExample';
@@ -26,31 +27,35 @@ class App extends Component {
         });
       }
     );
+    this.resetEditor = null;
   }
 
   signoutFromGoogle() {
-      var auth2 = window.gapi.auth2.getAuthInstance();
-      auth2.signOut().then(() => {
-          this.setState({loggedIn: false, email: '', accessToken: ''});
-      });
+    GoogleUtil.signout().then(() => {
       this.resetState();
+    }).catch((error) => {
+      window.alert("Signout from Google failed");
+    });
   }
 
   handleResponseGoogle(authResult) {
-      if (authResult && authResult.isSignedIn()) {
-          this.setState({email: authResult.getBasicProfile().getEmail(), accessToken: authResult.getAuthResponse().access_token});
-
-          AwsUtil.bindOpenId(authResult.getAuthResponse().id_token).then((result) => {
-            this.setState(...result, {loggedIn: true});
-          }).catch(error => {
-            console.dir(error);
-            window.alert('Something went wrong while binding open id to aws credentials!');
-          });
-
-      } else {
-          this.resetState();
-          window.alert('Login was not successful');
-      }
+    var result = GoogleUtil.handleResponse(authResult);
+    if (result === false) {
+      this.resetState();
+      window.alert('Login was not successful');
+    } else {
+      this.setState({
+        ...result
+      });
+      AwsUtil.bindOpenId(result.id_token).then((result) => {
+        this.setState(...result, {
+          loggedIn: true
+        });
+      }).catch(error => {
+        console.dir(error);
+        window.alert('Something went wrong while binding open id to aws credentials!');
+      });
+    }
   }
 
   fetchCommentList() {
@@ -68,32 +73,31 @@ class App extends Component {
     }).catch((error) => {
         if (error.status === 403) {
             window.alert('Please login first')
+        } else {
+          window.alert('Could not get Comments')
         }
         console.dir(error);
     });
   }
 
-  publishMessage(comment, postCommentDone) {
-      var apigClient = window.apigClientFactory.newClient({
-          accessKey: AWS.config.credentials.accessKeyId,
-          secretKey: AWS.config.credentials.secretAccessKey,
-          sessionToken: AWS.config.credentials.sessionToken
-      });
-      apigClient.commentsPost({}, {
-          uuid: AwsUtil.guid(),
+  publishMessage(comment) {
+      this.setState({submitEnabled: false});
+
+      this.commentApi.post({
+          uuid: guid(),
           clientTime: new Date().toJSON(),
           sender: this.state.email,
           value: comment
       }).then((response) => {
-          postCommentDone(true);
-      }).then(() => {
+          this.setState({submitEnabled: true});
+          this.refs.editor.resetContent();
       }).catch((error) => {
+          this.setState({submitEnabled: true});
           if (error.status === 403) {
               window.alert('Please login first')
           }
           window.alert("Send failed. Please try again later.");
           console.dir(error);
-          postCommentDone(false);
       });
   }
 
@@ -107,14 +111,17 @@ class App extends Component {
       this.setState({
           loggedIn: false,
           email: '',
-          accessToken: '',
           echo: '',
           serverTime: '',
           awsIdentityId: '',
           accessKeyId: '',
           secretAccessKey: '',
-          sessionToken:  ''
+          sessionToken:  '',
+          submitEnabled: true
       });
+      if (this.refs.editor) {
+        this.refs.editor.resetContent();
+      }
       AwsUtil.resetAWSLogin();
   }
 
@@ -139,7 +146,7 @@ class App extends Component {
         {
             this.state.loggedIn
                 ? <div style={{clear: 'both'}}>
-                    <RichEditorExample publishMessage={this.publishMessage}/>
+                    <RichEditorExample ref='editor' submitEnabled={this.state.submitEnabled} publishMessage={this.publishMessage}/>
                 </div>
                 : ''
         }

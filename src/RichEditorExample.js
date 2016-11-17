@@ -6,7 +6,7 @@ import { stateToHTML } from 'draft-js-export-html';
 import sanitizeHtml from 'sanitize-html';
 
 
-const {Editor, EditorState, RichUtils} = Draft;
+const {Editor, EditorState, RichUtils, ContentState} = Draft;
 
 // Custom overrides for "code" style.
 const styleMap = {
@@ -28,7 +28,7 @@ function getBlockStyle(block) {
 class RichEditorExample extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { editorState: EditorState.createEmpty(), buttonEnabled: true };
+        this.state = { editorState: EditorState.createEmpty()};
 
         this.focus = () => this.refs.editor.focus();
         this.onChange = (editorState) => this.setState({ editorState });
@@ -38,6 +38,7 @@ class RichEditorExample extends React.Component {
         this.toggleBlockType = (type) => this._toggleBlockType(type);
         this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
         this.handleSubmit = () => this._handleSubmit();
+        this.resetContent = this.resetContent.bind(this);
     }
 
     _handleKeyCommand(command) {
@@ -74,24 +75,19 @@ class RichEditorExample extends React.Component {
     }
 
     _handleSubmit() {
-        console.log(this.state.editorState.getCurrentContent());
         if (this.state.editorState.getCurrentContent().hasText()) {
-            this.setState( { buttonEnabled: false });
             const htmlContent = stateToHTML(this.state.editorState.getCurrentContent());
             const sanitizedContent = sanitizeHtml(htmlContent, {
                 allowedTags: [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol',
   'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'ins', 'pre' ]
             });
-            console.log('A comment was submitted: ' + htmlContent + ' ' + sanitizedContent);
-            this.props.publishMessage(sanitizedContent, (success) => {
-                this.setState({buttonEnabled: true})
-                if (success) {
-                    this.setState({editorState: EditorState.createEmpty()})
-                }
-            });
-        } else {
-            console.log('No comment typed');
+            this.props.publishMessage(sanitizedContent);
         }
+    }
+
+    resetContent() {
+      const editorState = EditorState.push(this.state.editorState, ContentState.createFromText(''));
+      this.setState({ editorState });
     }
 
     render() {
@@ -128,7 +124,7 @@ class RichEditorExample extends React.Component {
                         spellCheck={true}
                         />
                 </div>
-                <input type="button" value="Submit" onClick={this.handleSubmit} disabled={!this.state.buttonEnabled} />
+                <input type="button" value="Submit" onClick={this.handleSubmit} disabled={!this.props.submitEnabled} />
             </div>
         );
     }

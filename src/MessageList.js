@@ -3,7 +3,6 @@ import React from 'react';
 
 class MessageList extends React.Component {
   render() {
-    console.log(this.props.list);
     if (this.props.list.length === 0) {
       return <div>No comments found.</div>;
     } else {
