@@ -1,0 +1,136 @@
+#
+# Servlerss-Vienna
+# Comments-Showcase serverless config
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+
+service: CommentsShowcase
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  stage: dev
+  region: eu-central-1
+  cfLogs: true
+  iamRoleStatements:
+   - Effect: "Allow"
+     Action:
+       - "dynamodb:*"
+     Resource:
+       - "arn:aws:dynamodb:eu-central-1:*"
+
+custom:
+  IOT_TOPIC_MQTT: "$aws/things/webweb-thing/shadow/update"
+  OAUTH_GOOGLE_APP_KEY: OAUTH_GOOGLE_APP_KEY
+
+functions:
+  getComments:
+    handler: getComments.getComments
+    events:
+      - http:
+          path: comments
+          method: get
+          integration: lambda
+          cors: true
+  postComment:
+      handler: postComment.postComment
+      events:
+        - http:
+            path: comments
+            method: post
+            integration: lambda
+            cors: true
+  insertIntoTopicTrigger:
+    handler: insertIntoTopicTrigger.handler
+    runtime: python2.7
+    role: insertIntoTopicRole
+    environment:
+      IOT_TOPIC_REGION_ID: ${self:provider.region}
+      IOT_TOPIC_MQTT: ${self:custom.IOT_TOPIC_MQTT}
+
+resources:
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Comments
+        AttributeDefinitions:
+          - AttributeName: uuid
+            AttributeType: S
+          - AttributeName: serverTime
+            AttributeType: S
+        KeySchema:
+          - AttributeName: uuid
+            KeyType: HASH
+          - AttributeName: serverTime
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        # http://forum.serverless.com/t/dynamodb-streams-creation/792/2
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+    # https://github.com/serverless/serverless/issues/2359
+    ApiGatewayMethodCommentsPost:
+      Properties:
+        AuthorizationType: AWS_IAM
+    insertIntoTopicRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: insertIntoTopicRole
+        Policies:
+          - PolicyName: insertIntoTopicPolicy
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action: lambda:InvokeFunction
+                  Resource: arn:aws:lambda:*:*:function:insertIntoTopicTrigger*
+                - Effect: Allow
+                  Action:
+                    - dynamodb:DescribeStream
+                    - dynamodb:GetRecords
+                    - dynamodb:GetShardIterator
+                    - dynamodb:ListStreams
+                  Resource: arn:aws:dynamodb:${self:provider.region}:*:table/Comments/stream/*
+                - Effect: Allow
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource: arn:aws:logs:*:*:*
+                - Effect: Allow
+                  Action: iot:publish
+                  Resource: arn:aws:iot:${self:provider.region}:*:*
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: lambda.amazonaws.com
+              Action: sts:AssumeRole
+    googleIdentityRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: googleIdentityRole
+        Policies:
+          - PolicyName: accessApiGateway
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - execute-api:Invoke
+                  Resource: arn:aws:execute-api:*:*:*
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Federated: accounts.google.com
+              Action: sts:AssumeRoleWithWebIdentity
+              Condition:
+                StringEquals:
+                  accounts.google.com:aud: ${self:custom.OAUTH_GOOGLE_APP_KEY}
