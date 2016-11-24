@@ -40,10 +40,17 @@ jspm_packages
 config.json
 
 # apigw sdk
-# public/apigClient.js
-# public/apigwlib
+public/apigClient.js
+public/lib
 
 # production
 build
 config.laszlo.json
 config.websta.json
+
+# serverless
+.serverless
+serverless.yml
+
+# temp
+tmp
