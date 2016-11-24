@@ -33,7 +33,8 @@ export default class AwsCommentApi {
     var apigClient = window.apigClientFactory.newClient({
         accessKey: AWS.config.credentials.accessKeyId,
         secretKey: AWS.config.credentials.secretAccessKey,
-        sessionToken: AWS.config.credentials.sessionToken
+        sessionToken: AWS.config.credentials.sessionToken,
+        region: APPCONFIG.AWS.REGION
     });
     return apigClient.commentsPost({}, comment);
   }
