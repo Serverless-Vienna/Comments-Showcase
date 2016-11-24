@@ -10,9 +10,6 @@
             "ENDPOINT": "",
             "TOPIC": ""
         },
-        "COGNITO": {
-            "IDENTITYPOOLID": ""
-        },
         "GOOGLE": {
             "ROLE_ARN": ""
         }

@@ -4,11 +4,6 @@ import APPCONFIG from './config.json';
 export default class AwsUtil {
 
   static resetAWSLogin() {
-    // http://stackoverflow.com/questions/29524973/how-to-logout-from-amazon-cognito-javascript-and-clear-cached-identityid
-    // also used for default unauthenticated "login"
-    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: APPCONFIG.AWS.COGNITO.IDENTITY_POOL_ID
-    });
     // Initialize the Amazon Cognito credentials provider
     AWS.config.update({
       region: APPCONFIG.AWS.REGION
