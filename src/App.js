@@ -24,14 +24,11 @@ class App extends Component {
         ]
       });
     });
-    this.resetEditor = null;
   }
 
   signoutFromGoogle() {
     GoogleUtil.signout().then(() => {
       this.resetState();
-    }).catch((error) => {
-      window.alert("Signout from Google failed");
     });
   }
 
