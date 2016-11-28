@@ -28,6 +28,14 @@ Take the client id and enter it in ```./src/config.json``` under the key **OAUTH
 
 If you haven't done already, then install and configure your [aws cli](http://docs.aws.amazon.com/cli/latest/userguide/installing.html) before the next step.
 
+### DynamoDB, Functions, Roles, and Policies
+For the first basic setup the latest version of [Serverless Framework](https://github.com/serverless/serverless) is required:
+```bash
+$ npm install -g serverless
+$ cd ./serverless/aws
+$ serverless deploy
+```
+
 ### Google Identity Aws
 Now that the Google Identity Role has been deployed in the previous step, we can get the necessary configuration:
 ```bash
@@ -41,13 +49,6 @@ $ aws iam get-role --role-name googleIdentityRole
 ```
 Take the Arn value and enter it in ```./src/config.json``` under the key **AWS->GOOGLE->ROLE_ARN**
 
-### DynamoDB, Functions, Roles, and Policies
-For the first basic setup the latest version of [Serverless Framework](https://github.com/serverless/serverless) is required:
-```bash
-$ npm install -g serverless
-$ cd ./serverless/aws
-$ serverless deploy
-```
 ### IoT
 #### IoT user
 ```bash
