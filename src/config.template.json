@@ -4,8 +4,8 @@
         "REGION": "",
         "IOT": {
             "USER": {
-                "ACCESSKEY": "",
-                "SECRETKEY": ""
+                "ACCESS_KEY": "",
+                "SECRET_KEY": ""
             },
             "ENDPOINT": "",
             "TOPIC": ""
@@ -16,6 +16,8 @@
     },
     "**** OAUTH ****": "",
     "OAUTH": {
-        "GOOGLEAPIKEY": ""
+        "GOOGLE": {
+            "APP_KEY": ""
+        }
     }
 }

@@ -16,7 +16,7 @@ Copy the template configuration files:
 $ cp ./src/config.template.json ./src/config.json
 $ cp ./serverless/aws/serverless.template.yml ./serverless/aws/serverless.yml
 ```
-Enter your desired region (e.g. us-west-1) in ```./src/config.json``` under the key **AWS->REGION**
+Enter your desired region (e.g. us-west-1 for N.California or eu-central-1 for Frankfurt, see [Available Regions](http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions)) in ```./src/config.json``` under the key **AWS->REGION**
 
 ### Google Identity
 Configure and setup an oauth2 credential according to [Google Identity](https://developers.google.com/identity/protocols/OpenIDConnect
@@ -26,7 +26,7 @@ Take the client id and enter it in ```./src/config.json``` under the key **OAUTH
 
 ### Aws cli setup
 
-If you haven't done already, then install and configure your [aws cli](http://docs.aws.amazon.com/cli/latest/userguide/installing.html) before the next step.
+If you haven't done already, then [install](http://docs.aws.amazon.com/cli/latest/userguide/installing.html) and [configure](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) your AWS CLI (command line interface) before the next step. You probably have to create an user (AWS > IAM) and extract the required key and secret from the Users > Security Credentials page.   
 
 ### DynamoDB, Functions, Roles, and Policies
 For the first basic setup the latest version of [Serverless Framework](https://github.com/serverless/serverless) is required:
@@ -68,17 +68,7 @@ $ aws iam create-access-key --user-name iot
 ```
 Take the AccessKeyId and enter it in ```./src/config.json``` under the key **AWS->IOT->USER->ACCESS_KEY** and take the SecretAccessKey and enter it in ```./src/config.json``` under the key **AWS->IOT->USER->SECRET_KEY**.
 
-#### IoT - thing
-```bash
-$ aws iot create-thing --thing-name webweb-thing
-{
-    "thingArn": "arn:aws:iot:<AWS-REGION-ID>:<THING-ID>:thing/webweb-thing",
-    "thingName": "webweb-thing"
-}
-```
-Take the thingArn and enter it in ```./src/config.json``` under the key **AWS->IOT->TOPIC**.
-
-#### IoT - topic
+#### IoT - endpoint
 
 ```bash
 $ aws iot describe-endpoint
@@ -87,6 +77,16 @@ $ aws iot describe-endpoint
 }
 ```
 Take the endpointAddress and enter it in ```./src/config.json``` under the key **AWS->IOT->ENDPOINT**.
+
+#### IoT - thing/topic
+```bash
+$ aws iot create-thing --thing-name webweb-thing
+{
+    "thingArn": "arn:aws:iot:<AWS-REGION-ID>:<THING-ID>:thing/webweb-thing",
+    "thingName": "webweb-thing"
+}
+```
+Take the thingArn and enter it in ```./src/config.json``` under the key **AWS->IOT->TOPIC**.
 
 ### Trigger
 A Trigger is needed to put a new comment from dynamodb into the topic.
@@ -132,15 +132,18 @@ $ aws apigateway get-rest-apis
 $ aws apigateway get-sdk --rest-api-id <REST-API-ID> --stage-name dev --sdk-type javascript ./awsgclient.zip
 }
 ```
-unzip ```./awsgclient.zip``` into folder ```./public```.
+unzip ```./awsgclient.zip``` into folder ```./public```, so that the public folider contains the folder LIB, apigClient.cs, favicon.ico, index.html and README.md.
 
 ## local development
+Install the project dependencies (npm install) and start the application locally (npm start).
 ```bash
+$ npm install
 $ npm start
 ```
 The webapp can now be loaded at http://localhost:3000.
 
 ## gzip, build and deploy webapp
+Follow these steps for public deployment of the application into the Amazon Cloud. Please think of the Google Authorization settings and add your public URL to the Credentials Tab: Authorized JavaScript origins. 
 http://stackoverflow.com/questions/5442011/serving-gzipped-css-and-javascript-from-amazon-cloudfront-via-s3
 ```bash
 $ npm run build
