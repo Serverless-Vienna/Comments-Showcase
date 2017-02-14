@@ -6,8 +6,6 @@
     "react-scripts": "0.7.0"
   },
   "dependencies": {
-    "aws-mqtt-client": "0.0.5",
-    "aws-sdk": "^2.7.0",
     "draft-js": "^0.9.1",
     "draft-js-export-html": "^0.5.1",
     "react": "^15.3.2",

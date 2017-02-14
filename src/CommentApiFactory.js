@@ -1,11 +1,11 @@
-import AwsCommentApi from './AwsCommentApi';
+import BluemixCommentApi from './BluemixCommentApi';
 
 export default class CommentApiFactory {
-  static AWS = 'AWS';
+  static BLUEMIX = 'BLUEMIX';
 
   static create(PROVIDER, onMessage) {
-    if (PROVIDER === CommentApiFactory.AWS) {
-      return new AwsCommentApi(onMessage);
+    if (PROVIDER === CommentApiFactory.BLUEMIX) {
+      return new BluemixCommentApi(onMessage);
     } else {
       throw new Error("Unknown Provider " + PROVIDER);
     }

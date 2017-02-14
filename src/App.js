@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './App.css';
-import AwsUtil from './AwsUtil';
 import GoogleUtil from './GoogleUtil';
 import guid from './helper';
 import APPCONFIG from './config.json';
@@ -17,7 +16,7 @@ class App extends Component {
     this.fetchCommentList = this.fetchCommentList.bind(this);
     this.handleResponseGoogle = this.handleResponseGoogle.bind(this);
     this.signoutFromGoogle = this.signoutFromGoogle.bind(this);
-    this.commentApi = CommentApiFactory.create(CommentApiFactory.AWS, (message) => {
+    this.commentApi = CommentApiFactory.create(CommentApiFactory.BLUEMIX, (message) => {
       this.setState({
         messages: [
           message, ...this.state.messages
@@ -39,13 +38,7 @@ class App extends Component {
       window.alert('Login was not successful');
     } else {
       this.setState({
-        ...result
-      });
-      AwsUtil.bindOpenId(result.id_token).then((result) => {
-        this.setState(...result, {loggedIn: true});
-      }).catch(error => {
-        console.dir(error);
-        window.alert('Something went wrong while binding open id to aws credentials!');
+        ...result, loggedIn: true
       });
     }
   }
@@ -110,7 +103,6 @@ class App extends Component {
     if (this.refs.editor) {
       this.refs.editor.resetContent();
     }
-    AwsUtil.resetAWSLogin();
   }
 
   render() {
@@ -119,7 +111,7 @@ class App extends Component {
 
         <div className="App-header">
           <h2>Welcome to Serverless Vienna</h2>
-          <h2>Comments Showcase</h2>
+          <h2>Chat Showcase</h2>
         </div>
 
         {!this.state.loggedIn
