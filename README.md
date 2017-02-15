@@ -1,7 +1,7 @@
 # Comments-Showcase
 
 ## Introduction
-This is a serverless showcase webapp with Bluemix, Watson IoT and Google Web Identity.
+This is a serverless showcase webapp with Bluemix, Watson IoT and Google Web Identity. [Click for Demo](https://serverless-vienna.eu-gb.mybluemix.net/)
 
 ## Architecture
 
