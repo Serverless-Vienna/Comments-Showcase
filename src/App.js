@@ -115,6 +115,7 @@ class App extends Component {
     if (this.refs.editor) {
       this.refs.editor.resetContent();
     }
+    // this.signoutFromGoogle();
     // AwsUtil.resetAWSLogin();
   }
 
@@ -139,7 +140,7 @@ class App extends Component {
                 onFailure={this.handleResponseGoogleFailure}
                 offline={false}
                 autoLoad={false}
-                scope="profile email">
+                scope="email">
                 <span>Login with Google</span>
               </GoogleLogin>
             </div>

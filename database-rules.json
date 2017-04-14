@@ -4,6 +4,10 @@
       ".read": "true",
       ".write": "auth != null"
     },
+    "inbox-messages": {
+      ".read": "false",
+      ".write": "auth != null"
+    },
     "fcmTokens": {
       "$token": {
         ".read": "data.val() === auth.uid", // Users can only read their own device tokens

@@ -21,6 +21,7 @@ export default class FirebaseCommentApi {
     this.storage = firebase.storage();
 
     // Reference to the /messages/ database path.
+    this.inboxMessagesRef = this.database.ref('inbox-messages');
     this.messagesRef = this.database.ref('messages');
     this.messagesRef.on('child_added', this.unwrapMessage(onMessage));
     // this.messagesRef.on('child_changed', this.unwrapMessage(onMessage));
@@ -33,7 +34,7 @@ export default class FirebaseCommentApi {
   }
 
   post(comment) {
-    return this.messagesRef.push(comment);
+    return this.inboxMessagesRef.push(comment);
   }
 
   getAll() {
