@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import './App.css';
-import AwsUtil from './AwsUtil';
 import GoogleUtil from './GoogleUtil';
 import guid from './helper';
 import APPCONFIG from './config.json';
@@ -16,8 +15,9 @@ class App extends Component {
     this.resetState = this.resetState.bind(this);
     this.fetchCommentList = this.fetchCommentList.bind(this);
     this.handleResponseGoogle = this.handleResponseGoogle.bind(this);
+    this.handleResponseGoogleFailure = this.handleResponseGoogleFailure.bind(this);
     this.signoutFromGoogle = this.signoutFromGoogle.bind(this);
-    this.commentApi = CommentApiFactory.create(CommentApiFactory.AWS, (message) => {
+    this.commentApi = CommentApiFactory.create(CommentApiFactory.FIREBASE, (message) => {
       this.setState({
         messages: [
           message, ...this.state.messages
@@ -32,21 +32,27 @@ class App extends Component {
     });
   }
 
+  handleResponseGoogleFailure(error) {
+    console.dir(error);
+  }
+
   handleResponseGoogle(authResult) {
     var result = GoogleUtil.handleResponse(authResult);
-    if (result === false) {
+    if (result === undefined || result === false) {
       this.resetState();
       window.alert('Login was not successful');
     } else {
       this.setState({
-        ...result
+        ...result, loggedIn: true
       });
-      AwsUtil.bindOpenId(result.id_token).then((result) => {
-        this.setState(...result, {loggedIn: true});
-      }).catch(error => {
-        console.dir(error);
-        window.alert('Something went wrong while binding open id to aws credentials!');
-      });
+      // now what?
+
+      // AwsUtil.bindOpenId(result.id_token).then((result) => {
+      //   this.setState(...result, {loggedIn: true});
+      // }).catch(error => {
+      //   console.dir(error);
+      //   window.alert('Something went wrong while binding open id to aws credentials!');
+      // });
     }
   }
 
@@ -101,7 +107,6 @@ class App extends Component {
       email: '',
       echo: '',
       serverTime: '',
-      awsIdentityId: '',
       accessKeyId: '',
       secretAccessKey: '',
       sessionToken: '',
@@ -110,7 +115,7 @@ class App extends Component {
     if (this.refs.editor) {
       this.refs.editor.resetContent();
     }
-    AwsUtil.resetAWSLogin();
+    // AwsUtil.resetAWSLogin();
   }
 
   render() {
@@ -131,8 +136,10 @@ class App extends Component {
                 clientId={APPCONFIG.OAUTH.GOOGLE.APP_KEY}
                 buttonText="Login"
                 onSuccess={this.handleResponseGoogle}
-                onFailure={this.handleResponseGoogle}
-                scope="email">
+                onFailure={this.handleResponseGoogleFailure}
+                offline={false}
+                autoLoad={false}
+                scope="profile email">
                 <span>Login with Google</span>
               </GoogleLogin>
             </div>

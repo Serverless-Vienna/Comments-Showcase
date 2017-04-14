@@ -1,23 +1,17 @@
 {
-    "**** AWS ****": "",
-    "AWS": {
-        "REGION": "",
-        "IOT": {
-            "USER": {
-                "ACCESS_KEY": "",
-                "SECRET_KEY": ""
-            },
-            "ENDPOINT": "",
-            "TOPIC": ""
-        },
-        "GOOGLE": {
-            "ROLE_ARN": ""
-        }
-    },
     "**** OAUTH ****": "",
     "OAUTH": {
         "GOOGLE": {
             "APP_KEY": ""
         }
+    },
+    "**** FIREBASE ****": "",
+    "FIREBASE": {
+      "apiKey": "",
+      "authDomain": "",
+      "databaseURL": "",
+      "projectId": "",
+      "storageBucket": "",
+      "messagingSenderId": ""
     }
 }
