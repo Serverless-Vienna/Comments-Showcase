@@ -14,38 +14,55 @@ exports.serverTime = functions.database.ref('/inbox-messages/{pushId}/serverTime
 });
 */
 
-/*
+
 // for posting via rest, but missing authentication
 // errorCode = auth/argument-error, errorMessage = Firebase ID token has incorrect "aud" (audience) claim. Expected "serverless-vienna" but got "262782035764-nnr8gnetg94km271u00i4j3n674i9djf.apps.googleusercontent.com". Make sure the ID token comes from the same Firebase project as the service account used to authenticate this SDK. See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token., email = undefined, credential = undefined
-// Take the text parameter passed to this HTTP endpoint and insert it into the
-// Realtime Database under the path /messages/:pushId/original
-exports.addTest = functions.https.onRequest((req, res) => {
-  const original = req.body.text;
-  console.log("received auth: " + req.query.auth);
+// https://en.wikipedia.org/wiki/Confused_deputy_problem
+// problem was, it was the wrong id_token (the one from google authresponse has the wrong aud), but it bust be from firebase, e.g. via signInWithCredential on cient side.
+exports.messages = functions.https.onRequest((req, res) => {
+  // http://stackoverflow.com/questions/42140247/access-control-allow-origin-not-working-google-cloud-functions-gcf
+  // set JSON content type and CORS headers for the response
+  res.header('Content-Type','application/json');
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+  //respond to CORS preflight requests
+  if (req.method === 'OPTIONS') {
+      return res.status(204).send('').end();
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(501).send('Not Implemented! Only POST method is implemented!');
+  }
+
+  var newMessage = JSON.parse(req.body);
+  console.log(" got new message " + JSON.stringify(newMessage));
   // https://firebase.google.com/docs/auth/admin/verify-id-tokens
   return admin.auth().verifyIdToken(req.query.auth)
     .then(function(decodedToken) {
       var uid = decodedToken.uid;
-      // ...
-      return admin.database().ref('/testMessages').push({text: original, name: "anonymous"}).then(snapshot => {
-        res.status(200).end();
+      // decodedToken = {"iss":"https://securetoken.google.com/serverless-vienna","name":"László Király","picture":"https://lh3.googleusercontent.com/-NPbwpQhNZEw/AAAAAAAAAAI/AAAAAAAAAAA/AMcAYi-uHXeD11AcuOQul5j87hgBvH2UkQ/s96-c/photo.jpg","aud":"serverless-vienna","auth_time":1492467546,"user_id":"dzG7QjjvCqYMNhmod3kBuu2w3gB2","sub":"dzG7QjjvCqYMNhmod3kBuu2w3gB2","iat":1492467546,"exp":1492471146,"email":"laszlo.t.kiraly@gmail.com","email_verified":true,"firebase":{"identities":{"google.com":["118218554872242180454"],"email":["laszlo.t.kiraly@gmail.com"]},"sign_in_provider":"google.com"},"uid":"dzG7QjjvCqYMNhmod3kBuu2w3gB2"}
+      console.log('decodedToken = ' + JSON.stringify(decodedToken));
+
+      newMessage.serverTime = new Date().toJSON();
+      newMessage.value = sanitizeHtml(newMessage.value, {
+        allowedTags: [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol',
+        'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'ins', 'pre' ]
+      });
+
+      console.log(" writing new message " + JSON.stringify(newMessage));
+
+      return admin.database().ref('/messages').push(newMessage).then(snapshot => {
+        return res.status(200).end();
       });
     }).catch(function(error) {
       console.error(`errorCode = ${error.code}, errorMessage = ${error.message}, email = ${error.email}, credential = ${error.credential}`);
-      res.status(401).send('Not authorized!');
+      return res.status(401).send('Not authorized!').end();
     });
-  // // Grab the text parameter.
-  // const original = req.body.text;
-  // // Push it into the Realtime Database then send a response
-  // admin.database().ref('/testMessages').push({text: original, name: "anonymous"}).then(snapshot => {
-  //   // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase
-  //   // console.
-  //   res.redirect(303, snapshot.ref);
-  // });
 });
-*/
 
 
+/*
 exports.messageAddedToInbox = functions.database.ref('/inbox-messages/{pushId}').onWrite(event => {
 
   const inboundMessage = event.data.val();
@@ -64,6 +81,7 @@ exports.messageAddedToInbox = functions.database.ref('/inbox-messages/{pushId}')
 
   return admin.database().ref('/messages').push(message).then(() => { console.log("messageAddedToInbox http://stackoverflow.com/questions/43151022/firebase-cloud-function-onwrite-timeout") });
 });
+*/
 
 /*
 exports.messageAdded = functions.database.ref('/messages/{pushId}').onWrite(event => {

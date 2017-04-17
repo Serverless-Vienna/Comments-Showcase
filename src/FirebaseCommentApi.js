@@ -39,9 +39,9 @@ export default class FirebaseCommentApi {
     return firebase.auth().currentUser.getToken().then(token => {
       // GET https://serverless-vienna.firebaseio.com/messages.json works, because no auth needed
 
-      // did not work
       // var request = new Request('https://serverless-vienna.firebaseio.com/messages.json?access_token='+token, {
-      var request = new Request('https://serverless-vienna.firebaseio.com/inbox-messages.json?auth='+token, {
+      // var request = new Request('https://serverless-vienna.firebaseio.com/inbox-messages.json?auth='+token, {
+      var request = new Request('https://us-central1-serverless-vienna.cloudfunctions.net/messages?auth='+token, {
         method: 'POST',
         body: JSON.stringify(comment),
         mode: 'cors',
