@@ -6,7 +6,8 @@
     "@google-cloud/vision": "^0.10.0",
     "child-process-promise": "^2.2.0",
     "firebase-admin": "^4.1.1",
-    "firebase-functions": "^0.5.1"
+    "firebase-functions": "^0.5.1",
+    "sanitize-html": "^1.13.0"
   },
   "version": "1.0.0",
   "main": "index.js",

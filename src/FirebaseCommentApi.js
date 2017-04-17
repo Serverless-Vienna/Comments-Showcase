@@ -21,10 +21,10 @@ export default class FirebaseCommentApi {
     this.storage = firebase.storage();
 
     // Reference to the /messages/ database path.
-    this.inboxMessagesRef = this.database.ref('inbox-messages');
+    // this.inboxMessagesRef = this.database.ref('inbox-messages');
     this.messagesRef = this.database.ref('messages');
     this.messagesRef.on('child_added', this.unwrapMessage(onMessage));
-    // this.messagesRef.on('child_changed', this.unwrapMessage(onMessage));
+    this.messagesRef.on('child_changed', this.unwrapMessage(onMessage));
   }
 
   unwrapMessage(onMessage) {
@@ -34,7 +34,29 @@ export default class FirebaseCommentApi {
   }
 
   post(comment) {
-    return this.inboxMessagesRef.push(comment);
+    // var accessToken = window.credential.idToken;
+
+    return firebase.auth().currentUser.getToken().then(token => {
+      // GET https://serverless-vienna.firebaseio.com/messages.json works, because no auth needed
+
+      // did not work
+      // var request = new Request('https://serverless-vienna.firebaseio.com/messages.json?access_token='+token, {
+      var request = new Request('https://serverless-vienna.firebaseio.com/inbox-messages.json?auth='+token, {
+        method: 'POST',
+        body: JSON.stringify(comment),
+        mode: 'cors',
+        redirect: 'follow'
+        // did not work
+        // headers: new Headers({
+        //   'Content-Type': 'application/json',
+        //   'Authorization': 'Bearer ' + token
+        // })
+      });
+
+      return fetch(request);
+    });
+
+    // return this.inboxMessagesRef.push(comment);
   }
 
   getAll() {

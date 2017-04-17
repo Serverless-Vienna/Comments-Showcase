@@ -17,10 +17,27 @@ class App extends Component {
     this.handleResponseGoogle = this.handleResponseGoogle.bind(this);
     this.handleResponseGoogleFailure = this.handleResponseGoogleFailure.bind(this);
     this.signoutFromGoogle = this.signoutFromGoogle.bind(this);
-    this.commentApi = CommentApiFactory.create(CommentApiFactory.FIREBASE, (message) => {
+
+    this.commentApi = CommentApiFactory.create(CommentApiFactory.FIREBASE, (newMessage) => {
+
+      console.log("message received " + JSON.stringify(newMessage));
+
+      var messages = this.state.messages;
+      for (let [index, message] of messages.entries()) {
+        if (message.uuid === newMessage.uuid) {
+          messages[index] = {...newMessage};
+          this.setState({
+            messages: [
+              ...messages
+            ]
+          });
+          return;
+        }
+      }
+
       this.setState({
         messages: [
-          message, ...this.state.messages
+          newMessage, ...this.state.messages
         ]
       });
     });
@@ -45,14 +62,6 @@ class App extends Component {
       this.setState({
         ...result, loggedIn: true
       });
-      // now what?
-
-      // AwsUtil.bindOpenId(result.id_token).then((result) => {
-      //   this.setState(...result, {loggedIn: true});
-      // }).catch(error => {
-      //   console.dir(error);
-      //   window.alert('Something went wrong while binding open id to aws credentials!');
-      // });
     }
   }
 
@@ -82,7 +91,15 @@ class App extends Component {
   postComment(comment) {
     this.setState({submitEnabled: false});
 
-    this.commentApi.post({uuid: guid(), clientTime: new Date().toJSON(), sender: this.state.email, value: comment}).then((response) => {
+    var newMessage = {uuid: guid(), clientTime: new Date().toJSON(), sender: this.state.email, value: comment};
+
+    this.setState({
+      messages: [
+        newMessage, ...this.state.messages
+      ]
+    });
+
+    this.commentApi.post(newMessage).then((response) => {
       this.setState({submitEnabled: true});
       this.refs.editor.resetContent();
     }).catch((error) => {
