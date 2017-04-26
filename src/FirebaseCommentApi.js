@@ -20,11 +20,11 @@ export default class FirebaseCommentApi {
     this.database = firebase.database();
     this.storage = firebase.storage();
 
-    // Reference to the /messages/ database path.
-    // this.inboxMessagesRef = this.database.ref('inbox-messages');
-    this.messagesRef = this.database.ref('messages');
-    this.messagesRef.on('child_added', this.unwrapMessage(onMessage));
-    this.messagesRef.on('child_changed', this.unwrapMessage(onMessage));
+    // Reference to the /comments/ database path.
+    // this.inboxCommentsRef = this.database.ref('inbox-comments');
+    this.commentsRef = this.database.ref('comments');
+    this.commentsRef.on('child_added', this.unwrapMessage(onMessage));
+    this.commentsRef.on('child_changed', this.unwrapMessage(onMessage));
   }
 
   unwrapMessage(onMessage) {
@@ -37,11 +37,12 @@ export default class FirebaseCommentApi {
     // var accessToken = window.credential.idToken;
 
     return firebase.auth().currentUser.getToken().then(token => {
-      // GET https://serverless-vienna.firebaseio.com/messages.json works, because no auth needed
+      // GET https://serverless-vienna.firebaseio.com/comments.json works, because no auth needed
 
-      // var request = new Request('https://serverless-vienna.firebaseio.com/messages.json?access_token='+token, {
-      // var request = new Request('https://serverless-vienna.firebaseio.com/inbox-messages.json?auth='+token, {
-      var request = new Request('https://us-central1-serverless-vienna.cloudfunctions.net/messages?auth='+token, {
+      // big help: http://stackoverflow.com/questions/22188305/firebase-server-side-auth-with-http-post-request-using-the-firebase-secret
+      // var request = new Request('https://serverless-vienna.firebaseio.com/comments.json?access_token='+token, {
+      // var request = new Request('https://serverless-vienna.firebaseio.com/inbox-comments.json?auth='+token, {
+      var request = new Request('https://us-central1-serverless-vienna.cloudfunctions.net/comments?auth='+token, {
         method: 'POST',
         body: JSON.stringify(comment),
         mode: 'cors',
@@ -56,11 +57,12 @@ export default class FirebaseCommentApi {
       return fetch(request);
     });
 
-    // return this.inboxMessagesRef.push(comment);
+    // return this.commentsRef.push(comment);
+    // return this.inboxCommentsRef.push(comment);
   }
 
   getAll() {
-    // already contained in messagesRef
+    // already contained in commentsRef
     return new Promise((resolve) => {
       resolve([]);
     })

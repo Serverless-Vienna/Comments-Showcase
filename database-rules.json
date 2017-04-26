@@ -1,10 +1,10 @@
 {
   "rules": {
-    "messages": {
+    "comments": {
       ".read": "true",
       ".write": "auth != null"
     },
-    "inbox-messages": {
+    "inbox-comments": {
       ".read": "false",
       ".write": "auth != null"
     },

@@ -5,7 +5,7 @@ import guid from './helper';
 import APPCONFIG from './config.json';
 import GoogleLogin from 'react-google-login';
 import RichEditorExample from './RichEditorExample';
-import MessageList from './MessageList';
+import CommentList from './CommentList';
 import CommentApiFactory from './CommentApiFactory';
 
 class App extends Component {
@@ -18,17 +18,17 @@ class App extends Component {
     this.handleResponseGoogleFailure = this.handleResponseGoogleFailure.bind(this);
     this.signoutFromGoogle = this.signoutFromGoogle.bind(this);
 
-    this.commentApi = CommentApiFactory.create(CommentApiFactory.FIREBASE, (newMessage) => {
+    this.commentApi = CommentApiFactory.create(CommentApiFactory.FIREBASE, (newComment) => {
 
-      console.log("message received " + JSON.stringify(newMessage));
+      console.log("comment received " + JSON.stringify(newComment));
 
-      var messages = this.state.messages;
-      for (let [index, message] of messages.entries()) {
-        if (message.uuid === newMessage.uuid) {
-          messages[index] = {...newMessage};
+      var comments = this.state.comments;
+      for (let [index, comment] of comments.entries()) {
+        if (comment.uuid === newComment.uuid) {
+          comments[index] = {...newComment};
           this.setState({
-            messages: [
-              ...messages
+            comments: [
+              ...comments
             ]
           });
           return;
@@ -36,8 +36,8 @@ class App extends Component {
       }
 
       this.setState({
-        messages: [
-          newMessage, ...this.state.messages
+        comments: [
+          newComment, ...this.state.comments
         ]
       });
     });
@@ -66,18 +66,18 @@ class App extends Component {
   }
 
   fetchCommentList() {
-    this.commentApi.getAll().then((messages) => {
-      var allMessages = this.state.messages.concat(messages);
+    this.commentApi.getAll().then((comments) => {
+      var allComments = this.state.comments.concat(comments);
       // http://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-pr
       // operty-value-in-javascript
-      allMessages.sort(function(a, b) {
+      allComments.sort(function(a, b) {
         return (a.serverTime < b.serverTime)
           ? 1
           : ((b.serverTime < a.serverTime)
             ? -1
             : 0);
       });
-      this.setState({messages: allMessages});
+      this.setState({comments: allComments});
     }).catch((error) => {
       if (error.status === 403) {
         window.alert('Please login first')
@@ -91,15 +91,15 @@ class App extends Component {
   postComment(comment) {
     this.setState({submitEnabled: false});
 
-    var newMessage = {uuid: guid(), clientTime: new Date().toJSON(), sender: this.state.email, value: comment};
+    var newComment = {uuid: guid(), clientTime: new Date().toJSON(), sender: this.state.email, value: comment};
 
     this.setState({
-      messages: [
-        newMessage, ...this.state.messages
+      comments: [
+        newComment, ...this.state.comments
       ]
     });
 
-    this.commentApi.post(newMessage).then((response) => {
+    this.commentApi.post(newComment).then((response) => {
       this.setState({submitEnabled: true});
       this.refs.editor.resetContent();
     }).catch((error) => {
@@ -115,7 +115,7 @@ class App extends Component {
   componentWillMount() {
     this.resetState();
     this.fetchCommentList();
-    this.setState({messages: []});
+    this.setState({comments: []});
   }
 
   resetState() {
@@ -145,11 +145,9 @@ class App extends Component {
           <h2>Comments Showcase</h2>
         </div>
 
-        {!this.state.loggedIn
-          ? <div style={{
-              float: 'right'
-            }}>
-              <GoogleLogin
+        <div style={{ float: 'right' }}>
+          {!this.state.loggedIn
+            ? <GoogleLogin
                 className="button login-button"
                 clientId={APPCONFIG.OAUTH.GOOGLE.APP_KEY}
                 buttonText="Login"
@@ -160,25 +158,22 @@ class App extends Component {
                 scope="email">
                 <span>Login with Google</span>
               </GoogleLogin>
-            </div>
-          : <div style={{
-            float: 'right'
-          }}>
-            <button className="button logout-button" onClick={this.signoutFromGoogle}>
-              <span>Logout '{this.state.email}'</span>
-            </button>
-          </div>}
+            : <button className="button logout-button" onClick={this.signoutFromGoogle}>
+                <span>Logout '{this.state.email}'</span>
+              </button>
+          }
+        </div>
         {this.state.loggedIn
-          ? <div style={{
-              clear: 'both'
-            }}>
+          ? <div style={{ clear: 'both' }}>
               <RichEditorExample
                 ref='editor'
                 submitEnabled={this.state.submitEnabled}
                 publishContent={this.postComment}/>
             </div>
           : ''}
-        <MessageList list={this.state.messages}/>
+        <div style={{ clear: 'both' }}>
+          <CommentList list={this.state.comments}/>
+        </div>
       </div>
     );
   }
