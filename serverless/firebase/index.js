@@ -21,6 +21,7 @@ exports.serverTime = functions.database.ref('/inbox-comments/{pushId}/serverTime
 // problem was, it was the wrong id_token (the one from google authresponse has the wrong aud), but it bust be from firebase, e.g. via signInWithCredential on cient side.
 // configure google client id for web application: https://console.cloud.google.com/apis/credentials/oauthclient/262782035764-nnr8gnetg94km271u00i4j3n674i9djf.apps.googleusercontent.com?project=serverless-vienna
 // configure firebase authentication for google client id in whitelist https://console.firebase.google.com/project/serverless-vienna/authentication/providers
+
 exports.comments = functions.https.onRequest((req, res) => {
   // http://stackoverflow.com/questions/42140247/access-control-allow-origin-not-working-google-cloud-functions-gcf
   // set JSON content type and CORS headers for the response
@@ -48,7 +49,7 @@ exports.comments = functions.https.onRequest((req, res) => {
 
       newComment.serverTime = new Date().toJSON();
       newComment.value = sanitizeHtml(newComment.value, {
-        allowedTags: [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol',
+        allowedTags: [ 'h1', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'p', 'a', 'ul', 'ol',
         'nl', 'li', 'b', 'i', 'strong', 'em', 'strike', 'code', 'hr', 'br', 'div', 'ins', 'pre' ]
       });
 
@@ -85,6 +86,7 @@ exports.commentAddedToInbox = functions.database.ref('/inbox-comments/{pushId}')
 });
 */
 
+/*
 exports.upperCase = functions.database
   .ref("/comments/{pushId}/value")
   .onWrite((event) => {
@@ -94,6 +96,7 @@ exports.upperCase = functions.database
     return event.data.ref.set(newValue);
 
 });
+*/
 
 /*
 exports.commentAdded = functions.database.ref('/comments/{pushId}').onWrite(event => {
