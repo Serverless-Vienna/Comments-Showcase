@@ -24,7 +24,7 @@ export default class FirebaseCommentApi {
     // this.inboxCommentsRef = this.database.ref('inbox-comments');
     this.commentsRef = this.database.ref('comments');
     this.commentsRef.on('child_added', this.unwrapMessage(onMessage));
-    this.commentsRef.on('child_changed', this.unwrapMessage(onMessage));
+    // this.commentsRef.on('child_changed', this.unwrapMessage(onMessage));
   }
 
   unwrapMessage(onMessage) {
