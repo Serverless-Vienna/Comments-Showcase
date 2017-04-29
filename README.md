@@ -130,17 +130,14 @@ $ npm start
 ```
 The webapp can now be loaded at http://localhost:3000.
 
-## gzip, build and deploy webapp
+## build and deploy webapp
 Follow these steps for public deployment of the application into the Amazon Cloud. Please think of the Google Authorization settings and add your public URL to the Credentials Tab: Authorized JavaScript origins.
-http://stackoverflow.com/questions/5442011/serving-gzipped-css-and-javascript-from-amazon-cloudfront-via-s3
+your buckets can be accessed here https://console.aws.amazon.com/s3/buckets
 ```bash
 $ npm run build
-$ gzip -9 build/static/js/main.*.js
-$ mv build/static/js/main.*.js.gz build/static/js/main.*.js
-$ gzip -9 build/static/js/main.*.js.map
-$ mv build/static/js/main.*.js.map.gz build/static/js/main.*.map.js
 $ aws s3 cp build s3://<BUCKET>/ --recursive
 ```
+gzip and setting headers on s3 files only seems to be supported via cloudfront
 
 ## Future Tasks
 
