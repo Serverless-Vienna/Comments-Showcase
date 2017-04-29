@@ -159,12 +159,12 @@ gzip and setting headers on s3 files only seems to be supported via cloudfront
 |          |         +------------+    |          |
 +----------+                           | comments |
 +----------+                           |          |
-|          |                           |          |
-| get      |           added           |          |
-| comments |  <----------------------- |          |
-|          |                           |          |
+|          |           added           |          | -> +-----------+
+| get      |  <----------------------- |          |    | uppercase |
+| comments |          changed          |          | <- +-----------+
+|          |  <----------------------- |          |
 +----------+                           +----------+
-  browser               function         firebase
+  browser               function         firebase         onWrite
 ```
 
 ### Stack
