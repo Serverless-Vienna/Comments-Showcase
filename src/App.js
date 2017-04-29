@@ -71,9 +71,9 @@ class App extends Component {
       // http://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-pr
       // operty-value-in-javascript
       allComments.sort(function(a, b) {
-        return (a.serverTime < b.serverTime)
+        return (a.timestamp < b.timestamp)
           ? 1
-          : ((b.serverTime < a.serverTime)
+          : ((b.timestamp < a.timestamp)
             ? -1
             : 0);
       });
@@ -123,7 +123,7 @@ class App extends Component {
       loggedIn: false,
       email: '',
       echo: '',
-      serverTime: '',
+      timestamp: '',
       accessKeyId: '',
       secretAccessKey: '',
       sessionToken: '',

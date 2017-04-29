@@ -4,33 +4,30 @@ Demo: https://serverless-vienna.firebaseapp.com
 
 ## Setup
 
-Add Firebase Web Project https://tbd
+Create Firebase Web Project https://codelabs.developers.google.com/codelabs/firebase-web/#2
 
-Add configuration to config.json:
+Setup Firebase CLI https://codelabs.developers.google.com/codelabs/firebase-web/#3
+
+Add configuration to config.json (copy it from config.template.json) via add firebase to webapp in console at https://console.firebase.google.com/project/<your-project>/overview:
 ```
 {
-    "**** FIREBASE ****": "",
-    "FIREBASE": {
-      "apiKey": "",
-      "authDomain": "",
-      "databaseURL": "",
-      "projectId": "",
-      "storageBucket": "",
-      "messagingSenderId": ""
-    },
+  "**** FIREBASE ****": "",
+  "FIREBASE": {
+    "apiKey": "",
+    "authDomain": "",
+    "databaseURL": "",
+    "projectId": "",
+    "storageBucket": "",
+    "messagingSenderId": ""
+  },
 
 [...]
 
 }
 ```
 
-Add Firebase:
-```
-$ firebase use -add
-```
-
-Choose project and get webclient id https://console.developers.google.com/apis/credentials?project=_
-and add to config.json:
+Choose your google project and get webclient id  https://console.developers.google.com/apis/credentials?project=<your-project>
+and add it to APP_KEY in config.json:
 ```
 {
 
