@@ -1,6 +1,7 @@
 import AWSMqtt from 'aws-mqtt-client';
 import APPCONFIG from './config.json';
 import AWS from 'aws-sdk';
+import apigClientFactory from 'aws-api-gateway-client';
 
 export default class AwsCommentApi {
 
@@ -30,19 +31,21 @@ export default class AwsCommentApi {
   }
 
   post(comment) {
-    var apigClient = window.apigClientFactory.newClient({
+    var apigClient = apigClientFactory.newClient({
         accessKey: AWS.config.credentials.accessKeyId,
         secretKey: AWS.config.credentials.secretAccessKey,
         sessionToken: AWS.config.credentials.sessionToken,
-        region: APPCONFIG.AWS.REGION
+        region: APPCONFIG.AWS.REGION,
+        invokeUrl: APPCONFIG.AWS.FUNCTIONS.INVOKE_URL
     });
-    return apigClient.commentsPost({}, comment);
+    return apigClient.invokeApi({}, '/comments', 'POST', {}, comment);
   }
 
   getAll() {
     return new Promise((resolve, reject) => {
-      window.apigClientFactory.newClient()
-        .commentsGet({}, {})
+      apigClientFactory.newClient({ invokeUrl: APPCONFIG.AWS.FUNCTIONS.INVOKE_URL })
+        // .commentsGet({}, {})
+        .invokeApi({}, '/comments', 'GET', {}, {})
         .then((response) => {
           resolve(JSON.parse(response.data.body).Items);
         })

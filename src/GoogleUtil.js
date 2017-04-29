@@ -6,6 +6,10 @@ export default class GoogleUtil {
   }
 
   static handleResponse(authResult) {
+    if (authResult && authResult.error) {
+      console.error(`there was a problem with authentication: ${JSON.stringify(authResult)}`)
+      return false;
+    }
     if (authResult && authResult.isSignedIn()) {
       return {
         email: authResult.getBasicProfile().getEmail(),

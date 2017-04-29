@@ -117,22 +117,10 @@ $ aws dynamodbstreams list-streams
 $ aws lambda create-event-source-mapping --starting-position LATEST --function-name <FUNCTION-ARN> --event-source-arn <STREAM-ARN>
 ```
 
-### Generation of client side aws lib
-```bash
-$ aws apigateway get-rest-apis
-{
-    "items": [
-[...]
-        {
-            "createdDate": 1480011519,
-            "id": "<REST-API-ID>",
-            "name": "dev-CommentsShowcase"
-        },
-[...]
-$ aws apigateway get-sdk --rest-api-id <REST-API-ID> --stage-name dev --sdk-type javascript ./awsgclient.zip
-}
-```
-unzip ```./awsgclient.zip``` into folder ```./public```, so that the public folider contains the folder LIB, apigClient.cs, favicon.ico, index.html and README.md.
+### Configuration of AWS API Gateway
+
+Obtain invoke url as described in http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-call-api.html#how-to-call-api-console and put it into ```./src/config.json``` under the key **AWS->FUNCTIONS->INVOKE_URL**
+
 
 ## local development
 Install the project dependencies (npm install) and start the application locally (npm start).
@@ -143,7 +131,7 @@ $ npm start
 The webapp can now be loaded at http://localhost:3000.
 
 ## gzip, build and deploy webapp
-Follow these steps for public deployment of the application into the Amazon Cloud. Please think of the Google Authorization settings and add your public URL to the Credentials Tab: Authorized JavaScript origins. 
+Follow these steps for public deployment of the application into the Amazon Cloud. Please think of the Google Authorization settings and add your public URL to the Credentials Tab: Authorized JavaScript origins.
 http://stackoverflow.com/questions/5442011/serving-gzipped-css-and-javascript-from-amazon-cloudfront-via-s3
 ```bash
 $ npm run build

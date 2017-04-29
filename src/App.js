@@ -117,8 +117,10 @@ class App extends Component {
     return (
       <div className="App">
 
+        <div className="App-logo">
+        </div>
+
         <div className="App-header">
-          <h2>Welcome to Serverless Vienna</h2>
           <h2>Comments Showcase</h2>
         </div>
 
