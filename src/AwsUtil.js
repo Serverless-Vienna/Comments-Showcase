@@ -1,5 +1,5 @@
-import AWS from 'aws-sdk';
-import APPCONFIG from './config.json';
+import AWS from "aws-sdk";
+import APPCONFIG from "./config.json";
 
 export default class AwsUtil {
 
@@ -14,18 +14,18 @@ export default class AwsUtil {
     // web identity for api gateway
     AWS.config.credentials = new AWS.WebIdentityCredentials({
       RoleArn: APPCONFIG.AWS.GOOGLE.ROLE_ARN,
-      ProviderId: null, // this is null for Google, else 'graph.facebook.com|www.amazon.com'
+      ProviderId: null, // this is null for Google, else "graph.facebook.com|www.amazon.com"
       WebIdentityToken: id_token
     });
 
-    var promise = new Promise((resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
       AWS.config.credentials.get((error) => {
         if (!error) {
-          var identityId = AWS.config.credentials.identityId;
+          const identityId = AWS.config.credentials.identityId;
           // https://github.com/rpgreen/serverless-todo/blob/master/app/index.html
-          var accessKeyId = AWS.config.credentials.accessKeyId;
-          var secretAccessKey = AWS.config.credentials.secretAccessKey;
-          var sessionToken = AWS.config.credentials.sessionToken;
+          const accessKeyId = AWS.config.credentials.accessKeyId;
+          const secretAccessKey = AWS.config.credentials.secretAccessKey;
+          const sessionToken = AWS.config.credentials.sessionToken;
           resolve({
             awsIdentityId: identityId,
             accessKeyId: accessKeyId,

@@ -21,13 +21,21 @@ export default class AwsCommentApi {
       message = JSON.parse(message);
       onMessage({
         uuid: message.uuid.S,
-        serverTime: message.serverTime.S,
+        timestamp: message.serverTime.S,
         value: message.value ?
           message.value.S : '',
         sender: message.sender ?
           message.sender.S : ''
       });
     });
+  }
+
+  fixTimestamp(comments) {
+    comments.forEach((item) => {
+      item.timestamp = item.serverTime;
+      delete item.serverTime;
+    });
+    return comments;
   }
 
   post(comment) {
@@ -47,7 +55,7 @@ export default class AwsCommentApi {
         // .commentsGet({}, {})
         .invokeApi({}, '/comments', 'GET', {}, {})
         .then((response) => {
-          resolve(JSON.parse(response.data.body).Items);
+          resolve(this.fixTimestamp(JSON.parse(response.data.body).Items));
         })
         .catch((error) => {
           reject(error);

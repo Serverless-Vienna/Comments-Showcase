@@ -10,12 +10,12 @@
   list-style-type: none;
 }
 
-.App .MessageList {
+.App .CommentList {
   text-align: left;
   font-family: 'Georgia', serif;
 }
 
-.MessageList {
+.CommentList {
   border: 1px solid #ddd;
 }
 
@@ -51,18 +51,17 @@ button, input {
   border: 1px solid #D14836;
 }
 
-.MessageList .key {
+.CommentList .key {
   padding-right: 10px;
   color: #666;
   height: 100%;
   vertical-align: top;
 }
 
-.MessageList .value {
+.CommentList .value {
   display: inline-block;
 }
 
-.MessageList .value .p {
-  margin: 0;
-  padding: 0;
+.CommentList .value .p {
+  margin: 0; padding: 0;
 }

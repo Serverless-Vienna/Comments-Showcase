@@ -1,0 +1,25 @@
+{
+  "name": "comments-showcase-functions",
+  "description": "Comments Showcase Functions",
+  "dependencies": {
+    "@google-cloud/storage": "^0.8.0",
+    "@google-cloud/vision": "^0.10.0",
+    "child-process-promise": "^2.2.0",
+    "firebase-admin": "^4.1.1",
+    "firebase-functions": "^0.5.1",
+    "sanitize-html": "^1.13.0"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^6.0.0",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.7"
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "author": "",
+  "license": "ISC"
+}

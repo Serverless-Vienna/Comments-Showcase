@@ -1,14 +1,23 @@
 # Comments-Showcase
 
 ## Introduction
-This is a serverless showcase webapp with AWS: API Gateway, Lambda, DynamoDB, IoT, IAM and Google Web Identity.
 
-## Architecture
+This is a serverless comments showcase webapp for AWS and Firebase. The frontend is done with React, the editor is draft.js.
 
-![Serverless Architecture Diagram](https://serverless-vienna.github.io/2016/Meetup20161115/ServerlessByExample/dist/a992d5fe6535c74bb12b4d8bc94b555a.png "Serverless Architecture Diagram")
+### Demos
+
+- Firebase https://serverless-vienna.firebaseapp.com
+- AWS https://serverless-vienna.holupi.com
 
 
 ## Steps to Serverlessness on AWS
+
+### Architecture
+
+![Serverless Architecture Diagram](https://serverless-vienna.github.io/2016/Meetup20161115/ServerlessByExample/dist/a992d5fe6535c74bb12b4d8bc94b555a.png "Serverless Architecture Diagram")
+
+### Stack
+API Gateway, Lambda, DynamoDB, IoT, IAM and Google Web Identity.
 
 ### Configuration Templates
 Copy the template configuration files:
@@ -122,7 +131,7 @@ $ aws lambda create-event-source-mapping --starting-position LATEST --function-n
 Obtain invoke url as described in http://docs.aws.amazon.com/apigateway/latest/developerguide/how-to-call-api.html#how-to-call-api-console and put it into ```./src/config.json``` under the key **AWS->FUNCTIONS->INVOKE_URL**
 
 
-## local development
+### local development
 Install the project dependencies (npm install) and start the application locally (npm start).
 ```bash
 $ npm install
@@ -130,7 +139,7 @@ $ npm start
 ```
 The webapp can now be loaded at http://localhost:3000.
 
-## build and deploy webapp
+### build and deploy webapp
 Follow these steps for public deployment of the application into the Amazon Cloud. Please think of the Google Authorization settings and add your public URL to the Credentials Tab: Authorized JavaScript origins.
 your buckets can be accessed here https://console.aws.amazon.com/s3/buckets
 ```bash
@@ -139,13 +148,108 @@ $ aws s3 cp build s3://<BUCKET>/ --recursive
 ```
 gzip and setting headers on s3 files only seems to be supported via cloudfront
 
+## Steps to Serverlessness on Firebase
+
+### Architecture
+```
++----------+                           +----------+
+| post     |  REST   +------------+    |          |
+| comments | ------> | timestamp  | -> |          |
+|          |         | sanitize   |    |          |
+|          |         +------------+    |          |
++----------+                           | comments |
++----------+                           |          |
+|          |                           |          |
+| get      |           added           |          |
+| comments |  <----------------------- |          |
+|          |                           |          |
++----------+                           +----------+
+  browser               function         firebase
+```
+
+### Stack
+
+Firebase, Firebase Functions, Google Cloud Functions, Google Web Identity.
+
+### Setup
+
+Create Firebase Web Project https://codelabs.developers.google.com/codelabs/firebase-web/#2
+
+Setup Firebase CLI https://codelabs.developers.google.com/codelabs/firebase-web/#3
+
+Add configuration to config.json (copy it from config.template.json) via add firebase to webapp in console at https://console.firebase.google.com/project/<your-project>/overview:
+```
+{
+  "**** FIREBASE ****": "",
+  "FIREBASE": {
+    "apiKey": "",
+    "authDomain": "",
+    "databaseURL": "",
+    "projectId": "",
+    "storageBucket": "",
+    "messagingSenderId": ""
+  },
+
+[...]
+
+}
+```
+
+Choose your google project and get webclient id  https://console.developers.google.com/apis/credentials?project=<your-project>
+and add it to APP_KEY in config.json:
+```
+{
+
+[...]
+
+    "**** OAUTH ****": "",
+    "OAUTH": {
+        "GOOGLE": {
+            "APP_KEY": ""
+        }
+    }
+}
+```
+And add http://localhost:3000 to Authorized JavaScript origins in the client id configuration.
+
+#### webapp
+go to root folder
+```
+$ npm install
+```
+
+#### functions
+go to ```./serverless/firebase``` folder
+```
+$ npm install
+```
+and deploy them
+```
+$ firebase deploy --only functions
+```
+
+#### Local Development
+```
+$ npm start
+```
+Login to the webapp at http://localhost:3000, write a message and logout
+
+### Build and deploy all
+```
+$ npm run build
+...
+$ firebase deploy
+```
+
+open your firebase application url and have fun.
+
+
 ## Future Tasks
 
 - vanilla aws-cli
 - restrict policies to the specific resources
 - one-shot setup script for aws
 - more providers
-- more frameworks
 - get user email out of the token in the cloud (not in the browser client)
 - local testing
 - [...]
