@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is a serverless comments showcase webapp for AWS and Firebase. The frontend is done with React, the editor is draft.js.
+This project is a simple serverless comments showcase webapp for AWS and Firebase. The frontend is done with React, the editor is draft.js.
 
 ### Demos
 
