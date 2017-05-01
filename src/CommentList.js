@@ -5,10 +5,16 @@ class CommentList extends React.Component {
 
   render() {
     if (this.props.list.length === 0) {
-      return <div>No comments found.</div>;
+      return (
+        <div className="CommentList">
+          <div className="ProviderTitle provider"><span>{this.props.provider}</span></div>
+          <div className="empty"><span>No comments found.</span></div>
+        </div>
+      );
     } else {
       return (
         <div className="CommentList">
+          <div className="ProviderTitle provider"><span>{this.props.provider}</span></div>
           <ul>
             {/* TODO: use key from item, e.g. client uuid ( + userid or server uuid ? ), also needs a mechanism to deal with duplicate clientIds */}
             {this.props.list.map(function (item, index) {

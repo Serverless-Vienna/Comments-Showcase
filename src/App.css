@@ -1,5 +1,13 @@
+.App-logo .logo {
+  height: 120px;
+  padding: 0px;
+  margin-top: 10px;
+}
+
 .App {
   text-align: center;
+  padding: 10px;
+  font-family: 'Helvetica';
 }
 
 .App-intro {
@@ -8,15 +16,8 @@
 
 .App ul {
   list-style-type: none;
-}
-
-.App .CommentList {
-  text-align: left;
-  font-family: 'Georgia', serif;
-}
-
-.CommentList {
-  border: 1px solid #ddd;
+  overflow: hidden;
+  padding-left: 10px;
 }
 
 button, input {
@@ -49,6 +50,28 @@ button, input {
   background-color: white;
   color: #D14836;
   border: 1px solid #D14836;
+}
+
+.CommentList {
+  text-align: left;
+  font-family: 'Georgia', serif;
+  border: 1px solid #ddd;
+  margin: 5px;
+}
+
+.CommentList .ProviderTitle {
+  text-align: center;
+  width: 100%;
+  background: #000;
+}
+
+.provider {
+  color: #7DF;
+}
+
+.CommentList .empty {
+  text-align: center;
+  margin: 10px;
 }
 
 .CommentList .key {

@@ -8,6 +8,8 @@
   "no-magic-numbers": 0
   "react/prefer-es6-class": 0
   "react/no-multi-comp": 0
+  "react/sort-comp": [1]
+  "filenames/match-regex": 1
 
 "env":
   "browser": true,
