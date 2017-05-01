@@ -120,7 +120,7 @@ class RichEditorExample extends React.Component {
                         />
                 </div>
                 <input type="button" value="Submit" onClick={this.handleSubmit} disabled={!this.props.submitEnabled} />
-                <input type="button" value="Reset" onClick={this.resetContent} />
+                <input type="button" value="Reset" onClick={this.resetContent} disabled={!contentState.hasText()}/>
             </div>
         );
     }
