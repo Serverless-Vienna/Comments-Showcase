@@ -10,6 +10,8 @@
   "react/no-multi-comp": 0
   "react/sort-comp": [1]
   "filenames/match-regex": 1
+  "react/prop-types": [1]
+  "no-console": "error"
 
 "env":
   "browser": true,

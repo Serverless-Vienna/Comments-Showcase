@@ -181,7 +181,7 @@ class App extends Component {
       this.setState({
         ...result, loggedIn: true
       });
-      AwsUtil.bindOpenId(result.id_token).then((awsResult) => {
+      AwsUtil.bindOpenId(result.idToken).then((awsResult) => {
         this.setState(...awsResult, { loggedIn: true });
       }).catch((error) => {
         ConsoleLogger.dir(error);
@@ -227,7 +227,7 @@ class App extends Component {
         <div style={{ float: "right" }}>
           {!this.state.loggedIn
             ? <GoogleLogin
-              className="button login-button"
+              className="login-button"
               clientId={APPCONFIG.OAUTH.GOOGLE.APP_KEY}
               buttonText="Login"
               onSuccess={this.handleResponseGoogle}

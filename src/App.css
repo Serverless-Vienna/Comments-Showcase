@@ -17,7 +17,7 @@
 .App ul {
   list-style-type: none;
   overflow: hidden;
-  padding-left: 10px;
+  padding: 0px 10px;
 }
 
 button, input {
@@ -40,16 +40,22 @@ button, input {
   border: 1px solid yellow;
 }
 
-.login-button {
-  background-color: #D14836;
-  color: white;
-  border: 1px solid white;
+.login-button, .logout-button {
+  display: inline-block;
+  background: white;
+  color: black;
+  border-radius: 5px;
+  border: thin solid #888;
+  box-shadow: 1px 1px 1px grey;
+  white-space: nowrap;
+}
+
+.login-button:hover, .logout-button:hover {
+  cursor: pointer;
 }
 
 .logout-button {
-  background-color: white;
-  color: #D14836;
-  border: 1px solid #D14836;
+  color: grey;
 }
 
 .CommentList {
@@ -62,7 +68,9 @@ button, input {
 .CommentList .ProviderTitle {
   text-align: center;
   width: 100%;
-  background: #000;
+  background: linear-gradient(to right, #ADF, #000, #ADF);
+  font-family: 'Helvetica';
+  padding: 2px 0px;
 }
 
 .provider {
@@ -87,4 +95,11 @@ button, input {
 
 .CommentList .value .p {
   margin: 0; padding: 0;
+}
+
+/* inspired by https://codepen.io/ibrahimjabbari/pen/ozinB */
+hr.comment-hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, #FFF, #ADF, #FFF);
 }

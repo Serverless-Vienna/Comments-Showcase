@@ -13,7 +13,6 @@
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-google-login": "^2.8.9",
-    "react-router-dom": "^4.1.1",
     "sanitize-html": "^1.14.1"
   },
   "devDependencies": {

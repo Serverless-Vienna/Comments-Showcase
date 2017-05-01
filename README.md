@@ -146,7 +146,13 @@ your buckets can be accessed here https://console.aws.amazon.com/s3/buckets
 $ npm run build
 $ aws s3 cp build s3://<BUCKET>/ --recursive
 ```
-gzip and setting headers on s3 files only seems to be supported via cloudfront
+
+gzip and setting headers on files seems to be supported out of the box via cloudfront
+for s3 there are manual steps involved:
+```bash
+$ find ./build/static/js -type f -exec gzip -9 "{}" \; -exec mv "{}.gz" "{}" \;
+```
+For setting the correct header go to the console and edit the properties->metadata of the js and map file and add the Content-Encoding Header with a value of gzip.
 
 ## Steps to Serverlessness on Firebase
 
@@ -240,6 +246,7 @@ $ npm run build
 ...
 $ firebase deploy
 ```
+no need to gzip.
 
 open your firebase application url and have fun.
 
@@ -252,4 +259,6 @@ open your firebase application url and have fun.
 - more providers
 - get user email out of the token in the cloud (not in the browser client)
 - local testing
+- make javascript assets cacheable
+- aws gzip with cli, e.g. http://docs.aws.amazon.com/cli/latest/reference/s3api/put-object.html
 - [...]

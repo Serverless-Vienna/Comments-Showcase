@@ -54,9 +54,9 @@ exports.comments = functions.https.onRequest((req, res) => {
 });
 
 
-exports.commentAddedToInbox = functions.database.ref("/inbox-comments/{pushId}").onWrite(event => {
+exports.commentAddedToInbox = functions.database.ref("/inbox-comments/{pushId}").onWrite((event) => {
 
-  let comment = event.data.val();
+  const comment = event.data.val();
   console.log(`commentAddedToInbox: got ${JSON.stringify(comment)}`);
 
   comment.timestamp = new Date().toJSON();
@@ -121,7 +121,7 @@ exports.addRandom = functions.database.ref("/comments/{pushId}")
       return null;
     }
 
-    return event.data.ref.child("random").set(getRandom(1, 100))
+    return event.data.ref.child("random").set(getRandom(1, 100));
     // return event.data.ref.parent.child(
     //   event.params.pushId).child("random").set(getRandom(1, 100)
     // );

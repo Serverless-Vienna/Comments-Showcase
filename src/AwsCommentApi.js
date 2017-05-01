@@ -1,7 +1,7 @@
-import AWSMqtt from 'aws-mqtt-client';
-import APPCONFIG from './config.json';
-import AWS from 'aws-sdk';
-import apigClientFactory from 'aws-api-gateway-client';
+import AWSMqtt from "aws-mqtt-client";
+import APPCONFIG from "./config.json";
+import AWS from "aws-sdk";
+import apigClientFactory from "aws-api-gateway-client";
 
 export default class AwsCommentApi {
 
@@ -13,19 +13,19 @@ export default class AwsCommentApi {
       region: APPCONFIG.AWS.REGION
     });
 
-    this.mqttClient.on('connect', () => {
+    this.mqttClient.on("connect", () => {
       this.mqttClient.subscribe(APPCONFIG.AWS.IOT.TOPIC);
     });
 
-    this.mqttClient.on('message', (topic, message) => {
+    this.mqttClient.on("message", (topic, message) => {
       message = JSON.parse(message);
       onMessage({
         uuid: message.uuid.S,
         timestamp: message.serverTime.S,
         value: message.value ?
-          message.value.S : '',
+          message.value.S : "",
         sender: message.sender ?
-          message.sender.S : ''
+          message.sender.S : ""
       });
     });
   }
@@ -39,21 +39,21 @@ export default class AwsCommentApi {
   }
 
   post(comment) {
-    var apigClient = apigClientFactory.newClient({
-        accessKey: AWS.config.credentials.accessKeyId,
-        secretKey: AWS.config.credentials.secretAccessKey,
-        sessionToken: AWS.config.credentials.sessionToken,
-        region: APPCONFIG.AWS.REGION,
-        invokeUrl: APPCONFIG.AWS.FUNCTIONS.INVOKE_URL
+    const apigClient = apigClientFactory.newClient({
+      accessKey: AWS.config.credentials.accessKeyId,
+      secretKey: AWS.config.credentials.secretAccessKey,
+      sessionToken: AWS.config.credentials.sessionToken,
+      region: APPCONFIG.AWS.REGION,
+      invokeUrl: APPCONFIG.AWS.FUNCTIONS.INVOKE_URL
     });
-    return apigClient.invokeApi({}, '/comments', 'POST', {}, comment);
+    return apigClient.invokeApi({}, "/comments", "POST", {}, comment);
   }
 
   getAll() {
     return new Promise((resolve, reject) => {
       apigClientFactory.newClient({ invokeUrl: APPCONFIG.AWS.FUNCTIONS.INVOKE_URL })
         // .commentsGet({}, {})
-        .invokeApi({}, '/comments', 'GET', {}, {})
+        .invokeApi({}, "/comments", "GET", {}, {})
         .then((response) => {
           resolve(this.fixTimestamp(JSON.parse(response.data.body).Items));
         })

@@ -1,4 +1,5 @@
 import * as firebase from "firebase";
+import ConsoleLogger from "./ConsoleLogger";
 
 export default class GoogleUtil {
 
@@ -12,7 +13,7 @@ export default class GoogleUtil {
 
   static handleResponse(authResult) {
     if (authResult && authResult.error) {
-      console.error(`there was a problem with authentication: ${JSON.stringify(authResult)}`)
+      ConsoleLogger.error(`there was a problem with authentication: ${JSON.stringify(authResult)}`);
       return false;
     }
     if (!authResult.isSignedIn()) {
@@ -21,7 +22,7 @@ export default class GoogleUtil {
     if (!firebase.apps.length) {
       return {
         email: authResult.getBasicProfile().getEmail(),
-        id_token: authResult.getAuthResponse().id_token
+        idToken: authResult.getAuthResponse().id_token
       };
     }
     // taken from https://firebase.google.com/docs/auth/web/google-signin
@@ -33,15 +34,15 @@ export default class GoogleUtil {
         const credential = firebase.auth.GoogleAuthProvider.credential(authResult.getAuthResponse().id_token);
         // Sign in with credential from the Google user.
         firebase.auth().signInWithCredential(credential).catch((error) => {
-          console.error(`errorCode = ${error.code}, errorMessage = ${error.message}, email = ${error.email}, credential = ${error.credential}`);
+          ConsoleLogger.error(`errorCode = ${error.code}, errorMessage = ${error.message}, email = ${error.email}, credential = ${error.credential}`);
         });
       } else {
-        console.log('User already signed-in Firebase.');
+        ConsoleLogger.log("User already signed-in Firebase.");
       }
     });
     return {
       email: authResult.getBasicProfile().getEmail(),
-      id_token: authResult.getAuthResponse().id_token
+      idToken: authResult.getAuthResponse().id_token
     };
   }
 
