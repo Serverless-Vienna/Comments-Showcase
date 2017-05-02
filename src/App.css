@@ -1,7 +1,8 @@
 .App-logo .logo {
-  height: 120px;
   padding: 0px;
   margin-top: 10px;
+  max-width: 300px;
+  overflow: hidden;
 }
 
 .App {
@@ -63,6 +64,28 @@ button, input {
   font-family: 'Georgia', serif;
   border: 1px solid #ddd;
   margin: 5px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.App .CommentListColumn-1 {
+  float: left;
+  width: 100%;
+}
+
+.App .CommentListColumn-2 {
+  float: left;
+  width: 50%;
+}
+
+/* i want to see two columns on my small iphone 5s */
+@media (max-width: 567px) {
+  .App .CommentListColumn-2 {
+    float: left;
+    width: 100%;
+  }
 }
 
 .CommentList .ProviderTitle {
