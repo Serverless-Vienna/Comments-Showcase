@@ -255,10 +255,6 @@ class App extends Component {
         <div style={{ clear: "both" }}>
           {
             APPCONFIG.PROVIDERS.map((provider) => {
-              const maxWidth = `${100.0 / APPCONFIG.PROVIDERS.length}%`;
-              const style = {
-                maxWidth
-              };
               const className = `CommentListColumn-${APPCONFIG.PROVIDERS.length}`;
               return (
                 <div className={className} key={provider}>
